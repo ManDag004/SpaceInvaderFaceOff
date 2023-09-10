@@ -33,8 +33,8 @@ class Player:
             self.x += self.speed
 
 
+# updates the screen
 def redraw(player):
-    # update screen
     screen.fill((0, 0, 0))
     player.draw()
     pygame.display.update() 
