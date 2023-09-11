@@ -1,8 +1,9 @@
 import socket
 import _thread
 import sys
+from main import read_pos, make_pos
 
-server = "10.0.0.7"
+server = "10.0.0.73"
 port = 5555
 
 # setup socket
@@ -18,24 +19,29 @@ except socket.error as e:
 s.listen(2)
 print("Waiting for a connection, Server Started")
 
+pos = [(0, 0), (100, 100)]
 
 # function to run in background for each client 
-def threaded_client(conn):
+def threaded_client(conn, player):
+    conn.send(str.encode(make_pos(pos[player])))
     while True:
         try:
             # receive data from client
-            data = conn.recv(2048).decode("utf-8")
+            data = read_pos(conn.recv(2048).decode())
+            pos[player] = data
 
             # if data is empty
             if not data:
                 print("Disconnected")
                 break
             else:
+                reply = pos[1 - player]
                 print("Received:", data)
+                print("Sending:", reply)
                 reply = data
 
             # send data back to client
-            conn.sendall(str.encode(reply))
+            conn.sendall(str.encode(make_pos(reply)))
         except:
             break
     
@@ -45,8 +51,10 @@ def threaded_client(conn):
     
 
 # keeps server running
+currentPlayer = 0
 while True:
     conn, addr = s.accept()
     print("Connected to:", addr)
 
-    _thread.start_new_thread(threaded_client, (conn, ))
+    _thread.start_new_thread(threaded_client, (conn, currentPlayer))
+    currentPlayer += 1
