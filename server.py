@@ -21,7 +21,7 @@ print("Waiting for a connection, Server Started")
 
 pos = [(0, 0), (100, 100)]
 
-# function to run in background for each client 
+# function to run in background for each client
 def threaded_client(conn, player):
     conn.send(str.encode(make_pos(pos[player])))
     while True:
@@ -38,17 +38,16 @@ def threaded_client(conn, player):
                 reply = pos[1 - player]
                 print("Received:", data)
                 print("Sending:", reply)
-                reply = data
 
             # send data back to client
             conn.sendall(str.encode(make_pos(reply)))
         except:
             break
-    
+
     # connection is lost
     print("Lost connection")
     conn.close()
-    
+
 
 # keeps server running
 currentPlayer = 0
