@@ -19,7 +19,7 @@ except socket.error as e:
 s.listen(2)
 print("Waiting for a connection, Server Started")
 
-players = [Player(0, 0, (255, 0, 0), 0), Player(100, 100, (0, 0, 255), 1)]
+players = [Player(100, 350, (0, 255, 0), 0), Player(400, 350, (0, 0, 255), 1)]
 
 
 # function to run in background for each client

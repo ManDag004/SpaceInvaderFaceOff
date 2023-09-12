@@ -4,10 +4,11 @@ from network import Network
 pygame.init()
 
 SCREEN_INFO = pygame.display.Info()
-WIDTH, HEIGHT = SCREEN_INFO.current_w, SCREEN_INFO.current_h
+# WIDTH, HEIGHT = SCREEN_INFO.current_w, SCREEN_INFO.current_h
+WIDTH, HEIGHT = 600, 800
 
 # Create the window with current screen's width and height
-screen = pygame.display.set_mode((600, 800))
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 # updates the screen
 def redraw(player_1, enemy_ammo_in_home_list):
@@ -15,6 +16,14 @@ def redraw(player_1, enemy_ammo_in_home_list):
     player_1.draw(screen, enemy_ammo_in_home_list)
     pygame.display.update()
 
+# game over screen
+def game_over():
+    pygame.font.init()
+    font = pygame.font.SysFont("comicsans", 100)
+    text = font.render("Game Over", True, (255, 0, 0))
+    screen.blit(text, (WIDTH / 2 - text.get_width() / 2, HEIGHT / 2 - text.get_height() / 2))
+    pygame.display.update()
+    pygame.time.delay(2000)
 
 def main():
     is_running = True
@@ -39,6 +48,9 @@ def main():
         for ammo in ammo_in_enemy_territory:
             if player_2.collided_with_ammo(ammo):
                 is_running = player_2.hit(ammo)
+
+    game_over()
+
 
 
 if __name__ == "__main__":

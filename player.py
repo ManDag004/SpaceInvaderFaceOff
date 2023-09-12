@@ -8,34 +8,34 @@ class Player:
         self.width = 100
         self.height = 100
         self.color = color
-        self.speed = 4
+        self.speed = 7
         self.ammo = 7
         self.ammo_list = []
         self.player_num = player_num
         self.can_fire = True
-        self.health = 5
+        self.enemy_health = 5
 
     def draw(self, screen, enemy_ammo_in_home_list):
         pygame.draw.rect(screen, self.color, (self.x, self.y, self.width, self.height))
 
         for ammo in self.ammo_list:
             if ammo.territory == "home":
-              ammo.draw(screen)
+                ammo.draw(screen)
 
         for ammo in enemy_ammo_in_home_list:
             ammo.draw(screen)
 
     def move(self):
         keys = pygame.key.get_pressed()
-
-        if keys[pygame.K_w]:
+        if keys[pygame.K_w] and self.within_bounds(self.x, self.y - self.speed):
             self.y -= self.speed
-        if keys[pygame.K_s]:
+        if keys[pygame.K_s] and self.within_bounds(self.x, self.y + self.speed):
             self.y += self.speed
-        if keys[pygame.K_a]:
+        if keys[pygame.K_a] and self.within_bounds(self.x - self.speed, self.y):
             self.x -= self.speed
-        if keys[pygame.K_d]:
+        if keys[pygame.K_d] and self.within_bounds(self.x + self.speed, self.y):
             self.x += self.speed
+
         # fire only one ammo at the press of space
         if keys[pygame.K_SPACE]:
             if self.can_fire:
@@ -51,19 +51,24 @@ class Player:
         if self.ammo > 0:
             self.ammo -= 1
             if self.player_num == 0:
-                self.ammo_list.append(Ammo(self.x + 100, self.y + 45, self.color, (8, 0), self))
+                self.ammo_list.append(Ammo(self.x + 100, self.y + 45, self.color, (16, 0), self))
             else:
-                self.ammo_list.append(Ammo(self.x - 10, self.y + 45, self.color, (-8, 0), self))
+                self.ammo_list.append(Ammo(self.x - 10, self.y + 45, self.color, (-16, 0), self))
 
     def hit(self, ammo):
-        self.health -= 1
-        ammo.self_destroy()
-        if self.health == 0:
+        ammo.owner.enemy_health -= 1
+        
+        if ammo.owner.enemy_health == 0:
             return False
+        
+        ammo.self_destroy()
         return True
-    
+
     def collided_with_ammo(self, ammo):
         return self.x < ammo.x < (self.x + self.width) and self.y < ammo.y < self.y + self.height
+
+    def within_bounds(self, x, y):
+        return 0 < x < 500 and 0 < y < 700
 
 
 class Ammo:
@@ -99,5 +104,5 @@ class Ammo:
                 self.self_destroy()
 
     def self_destroy(self):
-        self.owner.ammo_list.remove(self)
         self.owner.ammo += 1
+        self.owner.ammo_list.remove(self)
