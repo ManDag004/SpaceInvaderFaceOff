@@ -1,5 +1,8 @@
 import pygame
 
+# WIDTH, HEIGHT = SCREEN_INFO.current_w, SCREEN_INFO.current_h
+WIDTH, HEIGHT = 600, 800
+
 
 class Player:
     def __init__(self, x, y, color, player_num):
@@ -14,6 +17,7 @@ class Player:
         self.player_num = player_num
         self.can_fire = True
         self.enemy_health = 5
+        self.has_won = False
 
     def draw(self, screen, enemy_ammo_in_home_list):
         pygame.draw.rect(screen, self.color, (self.x, self.y, self.width, self.height))
@@ -57,18 +61,17 @@ class Player:
 
     def hit(self, ammo):
         ammo.owner.enemy_health -= 1
-        
+
         if ammo.owner.enemy_health == 0:
-            return False
-        
+            ammo.owner.has_won = True
+
         ammo.self_destroy()
-        return True
 
     def collided_with_ammo(self, ammo):
         return self.x < ammo.x < (self.x + self.width) and self.y < ammo.y < self.y + self.height
 
     def within_bounds(self, x, y):
-        return 0 < x < 500 and 0 < y < 700
+        return 0 < x < (WIDTH - 100) and 0 < y < (HEIGHT - 100)
 
 
 class Ammo:
@@ -93,13 +96,13 @@ class Ammo:
             self.self_destroy()
 
     def has_collided_with_wall(self):
-        if self.x < 0 or self.x > 600 or self.y < 0 or self.y > 800:
+        if self.x < 0 or self.x > WIDTH or self.y < 0 or self.y > HEIGHT:
             if self.territory == "home":
                 self.territory = "enemy"
                 if self.speed[0] > 0:
                     self.x = 0
                 else:
-                    self.x = 600
+                    self.x = WIDTH
             else:
                 self.self_destroy()
 
