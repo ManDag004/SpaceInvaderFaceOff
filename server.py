@@ -2,8 +2,16 @@ import socket
 import _thread
 from player import Player
 import pickle
+import subprocess
 
-server = "10.0.0.73"
+command = 'ifconfig | grep "inet " | grep -Fv 127.0.0.1 | awk \'{print $2}\''
+
+
+try:
+    server = subprocess.check_output(command, shell=True, universal_newlines=True).strip()
+except Exception as e:
+    print("Error: ", e)
+
 port = 5555
 
 # setup socket
