@@ -1,4 +1,10 @@
 import pygame
+import simpleaudio as sa
+
+shoot_file = 'assets/shoot.wav'
+hit_file = 'assets/hit.wav'
+shoot_aud = sa.WaveObject.from_wave_file(shoot_file)
+hit_aud = sa.WaveObject.from_wave_file(hit_file)
 
 # WIDTH, HEIGHT = SCREEN_INFO.current_w, SCREEN_INFO.current_h
 WIDTH, HEIGHT = 600, 800
@@ -8,8 +14,8 @@ class Player:
     def __init__(self, x, y, color, player_num):
         self.x = x
         self.y = y
-        self.width = 100
-        self.height = 100
+        self.width = 96
+        self.height = 80
         self.color = color
         self.speed = 7
         self.ammo = 7
@@ -20,7 +26,7 @@ class Player:
         self.has_won = False
 
     def draw(self, screen, enemy_ammo_in_home_list):
-        pygame.draw.rect(screen, self.color, (self.x, self.y, self.width, self.height))
+        screen.blit(self.get_image(), (self.x, self.y))
 
         for ammo in self.ammo_list:
             if ammo.territory == "home":
@@ -52,14 +58,17 @@ class Player:
             ammo.move()
 
     def shoot(self):
+        shoot_aud.play()
         if self.ammo > 0:
             self.ammo -= 1
             if self.player_num == 0:
-                self.ammo_list.append(Ammo(self.x + 100, self.y + 45, self.color, (16, 0), self))
+                self.ammo_list.append(Ammo(self.x + self.width, self.y + self.height/2, self.color, (16, 0), self))
             else:
-                self.ammo_list.append(Ammo(self.x - 10, self.y + 45, self.color, (-16, 0), self))
+                self.ammo_list.append(Ammo(self.x - 10, self.y + self.height/2, self.color, (-16, 0), self))
 
     def hit(self, ammo):
+        hit_aud.play()
+        
         ammo.owner.enemy_health -= 1
 
         if ammo.owner.enemy_health == 0:
@@ -67,26 +76,33 @@ class Player:
 
         ammo.self_destroy()
 
+
     def collided_with_ammo(self, ammo):
         return self.x < ammo.x < (self.x + self.width) and self.y < ammo.y < self.y + self.height
 
     def within_bounds(self, x, y):
         return 0 < x < (WIDTH - 100) and 0 < y < (HEIGHT - 100)
+    
+    def get_image(self):
+        if self.player_num == 0:
+            image = pygame.image.load("assets/spaceship_blue.png")
+            return pygame.transform.rotate(image, -90)
+        else:
+            image = pygame.image.load("assets/spaceship_red.png")
+            return pygame.transform.rotate(image, 90)
 
 
 class Ammo:
     def __init__(self, x, y, color, speed, owner):
         self.x = x
         self.y = y
-        self.width = 10
-        self.height = 10
         self.color = color
         self.speed = speed
         self.owner = owner
         self.territory = "home"
 
     def draw(self, screen):
-        pygame.draw.rect(screen, self.color, (self.x, self.y, self.width, self.height))
+        pygame.draw.circle(screen, self.color, (self.x, self.y), 5)
 
     def move(self):
         self.x += self.speed[0]

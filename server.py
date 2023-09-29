@@ -9,6 +9,7 @@ command = 'ifconfig | grep "inet " | grep -Fv 127.0.0.1 | awk \'{print $2}\''
 
 try:
     server = subprocess.check_output(command, shell=True, universal_newlines=True).strip()
+    print("Server IP: ", server)
 except Exception as e:
     print("Error: ", e)
 
@@ -27,7 +28,7 @@ except socket.error as e:
 s.listen(2)
 print("Waiting for a connection, Server Started")
 
-players = [Player(100, 350, (0, 255, 0), 0), Player(400, 350, (0, 0, 255), 1)]
+players = [Player(100, 350, (0, 254, 204), 0), Player(400, 350, (254, 0, 0), 1)]
 
 
 # function to run in background for each client

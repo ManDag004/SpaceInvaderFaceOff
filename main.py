@@ -4,6 +4,7 @@ from network import Network
 pygame.init()
 
 SCREEN_INFO = pygame.display.Info()
+
 # WIDTH, HEIGHT = SCREEN_INFO.current_w, SCREEN_INFO.current_h
 WIDTH, HEIGHT = 600, 800
 
@@ -65,3 +66,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
