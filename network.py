@@ -2,7 +2,7 @@ import socket
 import pickle
 import subprocess
 
-command = 'ifconfig | grep "inet " | grep -Fv 127.0.0.1 | awk \'{print $2}\''
+command = 'ifconfig | grep "inet " | grep -Fv 127.0.0.1 | awk \'NR==1 {print $2}\''
 
 try:
     server = subprocess.check_output(command, shell=True, universal_newlines=True).strip()

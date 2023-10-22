@@ -4,7 +4,7 @@ from player import Player
 import pickle
 import subprocess
 
-command = 'ifconfig | grep "inet " | grep -Fv 127.0.0.1 | awk \'{print $2}\''
+command = 'ifconfig | grep "inet " | grep -Fv 127.0.0.1 | awk \'NR==1 {print $2}\''
 
 
 try:
@@ -46,8 +46,6 @@ def threaded_client(conn, player):
                 break
             else:
                 reply = players[1 - player]
-                print("Received:", data)
-                print("Sending:", reply)
 
             # send data back to client
             conn.sendall(pickle.dumps(reply))
