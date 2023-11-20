@@ -3,6 +3,7 @@ import _thread
 from player import Player
 import pickle
 import subprocess
+from main import SCREEN_INFO
 
 command = 'ifconfig | grep "inet " | grep -Fv 127.0.0.1 | awk \'NR==1 {print $2}\''
 
@@ -28,7 +29,7 @@ except socket.error as e:
 s.listen(2)
 print("Waiting for a connection, Server Started")
 
-players = [Player(100, 350, (0, 254, 204), 0), Player(400, 350, (254, 0, 0), 1)]
+players = [Player(100, 350, (0, 254, 204), 0), Player(SCREEN_INFO.current_w - 100, 350, (254, 0, 0), 1)]
 
 
 # function to run in background for each client

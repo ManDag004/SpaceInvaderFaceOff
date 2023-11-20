@@ -4,9 +4,8 @@ from network import Network
 pygame.init()
 
 SCREEN_INFO = pygame.display.Info()
-
-# WIDTH, HEIGHT = SCREEN_INFO.current_w, SCREEN_INFO.current_h
-WIDTH, HEIGHT = 600, 800
+WIDTH, HEIGHT = SCREEN_INFO.current_w, SCREEN_INFO.current_h
+# WIDTH, HEIGHT = 600, 800
 
 # Create the window with current screen's width and height
 screen = pygame.display.set_mode((WIDTH, HEIGHT))

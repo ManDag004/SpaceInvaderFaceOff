@@ -1,13 +1,14 @@
 import pygame
 import simpleaudio as sa
+from main import SCREEN_INFO
 
 shoot_file = 'assets/shoot.wav'
 hit_file = 'assets/hit.wav'
 shoot_aud = sa.WaveObject.from_wave_file(shoot_file)
 hit_aud = sa.WaveObject.from_wave_file(hit_file)
 
-# WIDTH, HEIGHT = SCREEN_INFO.current_w, SCREEN_INFO.current_h
-WIDTH, HEIGHT = 600, 800
+WIDTH, HEIGHT = SCREEN_INFO.current_w, SCREEN_INFO.current_h
+# WIDTH, HEIGHT = 600, 800
 
 
 class Player:
@@ -62,9 +63,9 @@ class Player:
         if self.ammo > 0:
             self.ammo -= 1
             if self.player_num == 0:
-                self.ammo_list.append(Ammo(self.x + self.width, self.y + self.height/2, self.color, (16, 0), self))
+                self.ammo_list.append(Ammo(self.x + self.width, self.y + self.height/2, self.color, (26, 0), self))
             else:
-                self.ammo_list.append(Ammo(self.x - 10, self.y + self.height/2, self.color, (-16, 0), self))
+                self.ammo_list.append(Ammo(self.x - 10, self.y + self.height/2, self.color, (-26, 0), self))
 
     def hit(self, ammo):
         hit_aud.play()
