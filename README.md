@@ -42,3 +42,4 @@ python3 main.py
 
 ## Usage
 
+![Game Demo](IMG_1092.gif)
