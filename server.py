@@ -1,9 +1,11 @@
 import socket
 import _thread
+import threading
 from player import Player
 import pickle
 import subprocess
 from main import SCREEN_INFO
+import time
 
 command = 'ifconfig | grep "inet " | grep -Fv 127.0.0.1 | awk \'NR==1 {print $2}\''
 
@@ -13,8 +15,22 @@ try:
     print("Server IP: ", server)
 except Exception as e:
     print("Error: ", e)
+    
 
 port = 5555
+
+
+def broadcast_ip():
+    port = 12345  # Choose an appropriate port
+    server_ip = server  # Get the server's local IP address
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        while True:
+            s.sendto(server_ip.encode(), ('<broadcast>', port))
+            time.sleep(10)  # Broadcast every 10 seconds
+
+broadcast_thread = threading.Thread(target=broadcast_ip)
+broadcast_thread.start()
 
 # setup socket
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -47,6 +63,7 @@ def threaded_client(conn, player):
                 break
             else:
                 reply = players[1 - player]
+                print("Received: ", data)
 
             # send data back to client
             conn.sendall(pickle.dumps(reply))
@@ -66,3 +83,5 @@ while True:
 
     _thread.start_new_thread(threaded_client, (conn, currentPlayer))
     currentPlayer += 1
+
+
